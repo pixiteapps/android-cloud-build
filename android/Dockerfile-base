@@ -1,8 +1,6 @@
 # we use a gcr.io image and not openjdk:8-jdk-slim because it loads faster in the google Google Cloud Build environment
 FROM gcr.io/cloud-builders/javac
 
-LABEL maintainer="ryan@pixiteapps.com"
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 # make Apt non-interactive
@@ -48,16 +46,7 @@ RUN sdkmanager \
     "platform-tools" \
     "extras;android;m2repository" \
     "extras;google;m2repository" \
-    "extras;google;google_play_services"
-
-RUN sdkmanager \
-    "cmake;3.6.4111459" \
+    "extras;google;google_play_services" \
     "build-tools;28.0.3" \
-    "platforms;android-28"
 
-# Install the NDK
-RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/${ndk_version}.zip https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip && \
-    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
-    rm /tmp/${ndk_version}.zip
-
-ENV ANDROID_NDK_HOME ${android_ndk_home}
+CMD ["/bin/bash"]

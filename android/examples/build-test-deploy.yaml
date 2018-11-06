@@ -96,7 +96,7 @@ steps:
 # In order to get the build number that we calculated earlier, we need to source the 
 # build_environment.sh file *in each step it's needed* before running our build.
 #
-- name: 'gcr.io/$PROJECT_ID/android'
+- name: 'gcr.io/$PROJECT_ID/android:28'
   id: build
   entrypoint: 'bash'
   args:
@@ -131,7 +131,7 @@ steps:
 #
 # Run the unit tests using the same type of step as the build.
 #
-- name: 'gcr.io/$PROJECT_ID/android'
+- name: 'gcr.io/$PROJECT_ID/android:28'
   id: unit_tests
   entrypoint: 'bash'
   args:
@@ -166,7 +166,7 @@ steps:
 #
 # Deploy to Google Play if this is the master branch.
 #
-- name: 'gcr.io/$PROJECT_ID/android'
+- name: 'gcr.io/$PROJECT_ID/android:28'
   id: deploy_to_play
   entrypoint: 'bash'
   args:
@@ -183,7 +183,7 @@ steps:
 #
 # Deploy to Crashlytics Beta if this is any other branch.
 #
-- name: 'gcr.io/$PROJECT_ID/android'
+- name: 'gcr.io/$PROJECT_ID/android:28'
   id: deploy_to_beta
   entrypoint: 'bash'
   args:

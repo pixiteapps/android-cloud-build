@@ -12,6 +12,8 @@ Depending on your needs, you will need to deploy some or all of the supplied bui
 gcloud builds submit --config=cloudbuild.yaml
 ```
 
+Check the Android [readme file](android/README.md) for instructions to build the Android SDK image.
+
 ### 2. Deploy the Github Status Cloud Function (Optional)
 
 If you want to get build notifications in Github then follow the instructions in the [github-status](github-status/README.md) project to deploy the Cloud Function.
