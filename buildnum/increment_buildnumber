@@ -1,0 +1,19 @@
+#!/bin/bash
+
+BUILD_NUM_FILE=$1
+BUILD_ENV_FILE=$2
+
+OLD_BUILD_NUM=$(cat "$BUILD_NUM_FILE" || echo 0)
+BUILD_NUM=$(($OLD_BUILD_NUM + 1))
+
+echo "Build number: $BUILD_NUM"
+
+echo "$BUILD_NUM" > "$BUILD_NUM_FILE"
+
+echo "#!/usr/bin/env bash" > "$BUILD_ENV_FILE"
+echo >> "$BUILD_ENV_FILE"
+echo "export BUILD_NUM=$BUILD_NUM" >> "$BUILD_ENV_FILE"
+chmod +x "$BUILD_ENV_FILE"
+
+echo "Written to file: `pwd`/$BUILD_ENV_FILE"
+cat "$BUILD_ENV_FILE"

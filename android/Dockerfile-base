@@ -47,6 +47,9 @@ RUN sdkmanager \
     "extras;android;m2repository" \
     "extras;google;m2repository" \
     "extras;google;google_play_services" \
-    "build-tools;28.0.3" \
+    "build-tools;28.0.3"
 
-CMD ["/bin/bash"]
+COPY for_branch /bin
+COPY run_build /bin
+
+ENTRYPOINT ["bash", "/bin/run_build"]

@@ -1,7 +1,12 @@
 # Android Builder
 
 The Dockerfile and scripts here help you use Google Cloud Builder to build Android applications.  
-These instructions assume that you have [Android SDK](https://developer.android.com/studio/index.html) installed and can build the subject Android application locally on your workstation.  
+These instructions assume that you have [Android SDK](https://developer.android.com/studio/index.html) installed and can build the subject Android application locally on your workstation. 
+
+# Build Environment
+
+To customize the build environment **during the build process**, for instance, to add environment variables for later build steps, create a script in the working directory called `.buildenv`.  
+
 # Usage
 
 ### 1. Deploy the builders
@@ -28,7 +33,7 @@ gcloud builds submit --config=cloudbuild-ndk.yaml --substitutions=_ANDROID_VERSI
 
 Create a `cloudbuild.yaml` file based on your needs and save it in the root of your project.
 
-Check out the [complete sample](samples/build-test-deploy.yaml) for some ideas of how to accomplish this.
+Check out the [complete example](examples/build-test-deploy.yaml) for some ideas of how to accomplish this.
 
 > The sample yaml file also requires the [tar](../tar) docker image.
 
@@ -108,7 +113,7 @@ Please use [issue tracker](https://github.com/GoogleCloudPlatform/android-cloud-
 on GitHub to report any bugs, comments or questions regarding SDK development.
 
 We welcome all usage-related questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/google-android-cloud-build)
-tagged with `google-cloud-container-builder`.
+tagged with `google-cloud-build`.
 
 # More Information
 

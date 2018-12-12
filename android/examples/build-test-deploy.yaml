@@ -27,7 +27,7 @@ steps:
   args: 
   - '-c'
   - |
-    cat /config/buildnum | awk '{print $1"+1"}' | bc | tee /config/buildnum | awk '{print "BUILD_NUM="$1 }' | tee build_env
+    cat /config/buildnum | awk '{print $1"+1"}' | bc | tee /config/buildnum | awk '{print "BUILD_NUM="$1 }' | tee .buildenv
   waitFor: ['copy_config']
   volumes:
   - name: 'config'
