@@ -1,19 +1,37 @@
 #!/bin/bash
 
-BUILD_NUM_FILE=$1
-BUILD_ENV_FILE=$2
+SOURCE_FILE=$1
+BUILD_ENV_FILE=${2:-.buildenv}
+
+BUILD_NUM_FILE=$SOURCE_FILE
+
+# If the source file is a cloud storage link, download it
+if [[ "$SOURCE_FILE" == gs://* ]];then 
+  echo "Copying build number file from $SOURCE_FILE"
+  mkdir -p /tmp/config
+  gsutil -q rsync "$SOURCE_FILE" /tmp/config
+
+  build_file_path=$(echo "$SOURCE_FILE" | awk -F"/" '{;$1=$2=$3="";gsub(/\?.*/,"",$NF);print substr($0,3);}' OFS="/")
+  BUILD_NUM_FILE="/tmp/config${build_file_path}"
+else
+  echo "Reading build number from $SOURCE_FILE"
+fi
 
 OLD_BUILD_NUM=$(cat "$BUILD_NUM_FILE" || echo 0)
 BUILD_NUM=$(($OLD_BUILD_NUM + 1))
 
-echo "Build number: $BUILD_NUM"
+echo "Incrementing build number: $OLD_BUILD_NUM => $BUILD_NUM"
 
 echo "$BUILD_NUM" > "$BUILD_NUM_FILE"
+if [[ "$SOURCE_FILE" != "$BUILD_NUM_FILE" ]];then
+  echo "Uploading updated build number..."
+  gsutil -q cp -R /tmp/config/* "$SOURCE_FILE"
+fi
 
 echo "#!/usr/bin/env bash" > "$BUILD_ENV_FILE"
 echo >> "$BUILD_ENV_FILE"
 echo "export BUILD_NUM=$BUILD_NUM" >> "$BUILD_ENV_FILE"
 chmod +x "$BUILD_ENV_FILE"
 
-echo "Written to file: `pwd`/$BUILD_ENV_FILE"
-cat "$BUILD_ENV_FILE"
+echo "Build env file written to: `pwd`/$BUILD_ENV_FILE"
+

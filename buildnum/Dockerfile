@@ -1,4 +1,4 @@
-FROM launcher.gcr.io/google/ubuntu16_04
+FROM gcr.io/cloud-builders/gsutil
 
 COPY increment_buildnumber /bin
 
