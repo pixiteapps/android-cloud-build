@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cksum $@ | cut -d' ' -f1
