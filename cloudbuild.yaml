@@ -1,18 +1,39 @@
 steps:
-- name: gcr.io/cloud-builders/docker
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/zip', './zip']
 
-- name: gcr.io/cloud-builders/docker
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/unzip', './unzip']
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    # File that contains failures.
+    failure_file=failure.log
+    touch ${failure_file}
 
-- name: gcr.io/cloud-builders/docker
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/tar', './tar']
+    # Loop through the cloud build files
+    for config in $(find . -name 'cloudbuild*.yaml');do
+      dir=$(dirname ${config})
+      name=$(basename ${dir})
 
-- name: gcr.io/cloud-builders/docker
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/android', './android']
+      echo "Building $name ..."
+      (
+        logfile=${name}.log
+        gcloud builds submit --config=${config} ${dir} > ${logfile}
+        if [[ $? -ne 0 ]];then
+          echo "$name failed" | tee -a ${failure_file}
+          cat ${logfile}
+        fi
+      ) &
+    done
 
-images: 
-- 'gcr.io/$PROJECT_ID/zip'
-- 'gcr.io/$PROJECT_ID/unzip'
-- 'gcr.io/$PROJECT_ID/tar'
-- 'gcr.io/$PROJECT_ID/android'
+    wait
+
+    # Check if there is any failure
+    if [[ -s ${failure_file} ]];then
+      echo
+      echo "Some builds failed."
+      cat ${failure_file}
+      echo "Exiting."
+      exit 1
+    fi
+
+    echo "All builds succeeded."
