@@ -38,7 +38,10 @@ ENV PATH=${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bi
 
 RUN mkdir ~/.android && echo '### User Sources for Android SDK Manager' > ~/.android/repositories.cfg
 
-RUN yes | sdkmanager --licenses && sdkmanager --update
+# Work around for https://issuetracker.google.com/issues/123054726
+RUN yes | sdkmanager --licenses && \
+    echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "${ANDROID_HOME}/licenses/android-sdk-license" && \
+    sdkmanager --update
 
 # Update SDK manager and install system image, platform and build tools
 RUN sdkmanager \

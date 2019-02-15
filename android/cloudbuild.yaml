@@ -24,4 +24,7 @@ images:
   - 'gcr.io/$PROJECT_ID/android:base'
   - 'gcr.io/$PROJECT_ID/android:${_ANDROID_VERSION}'
 
+substitutions:
+  _ANDROID_VERSION: '28'
+
 timeout: 2000s

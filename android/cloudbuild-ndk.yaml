@@ -38,4 +38,7 @@ images:
   - 'gcr.io/$PROJECT_ID/android:${_ANDROID_VERSION}'
   - 'gcr.io/$PROJECT_ID/android:${_ANDROID_VERSION}-ndk-r17b'
 
+substitutions:
+  _ANDROID_VERSION: '28'
+
 timeout: 2000s
