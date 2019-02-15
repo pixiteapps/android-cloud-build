@@ -1,4 +1,4 @@
-FROM gcr.io/cloud-builders/gsutil
+FROM gcr.io/cloud-builders/gcloud-slim
 
 COPY restore_cache /bin
 COPY checksum /bin
