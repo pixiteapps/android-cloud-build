@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+#
+# deploy_to_gcs - Deploy files to the artifact folder for this build on GCS
+
+# Get the build info from the .buildenv file.
+if [[ -f .buildenv ]];then
+  . .buildenv
+fi
+
+BUCKET=${1}
+shift
+
+# Construct the artifact folder name
+if [[ -n "$BUILD_NUM" ]];then
+  ARTIFACT_FOLDER="build-${BUILD_NUM}"
+else
+  TIMESTAMP=${BUILD_TIME:-$(date -u +%Y-%m-%dT%H:%M:%S)}
+  BRANCH=$(echo ${BRANCH_NAME:-unknown} | sed -e 's/[^A-Za-z0-9._-]/_/g')
+  ARTIFACT_FOLDER="${TIMESTAMP}-${BRANCH}"
+fi
+
+# Collect all files in the directories so we can preserve
+# the directory structure in GCS.
+declare -a FILES
+for dir in "$@";do
+  found=$(find "${dir%/}" -type f )
+  for file in $found;do
+    file=${file#"$(dirname $dir)"} # remove the directory prefix
+    file=${file#/} # remove a possible leading slash
+    FILES+=($file)
+  done
+done
+
+failure_file=failure.log
+touch ${failure_file}
+
+# Upload the files to GCS
+for dir in "$@";do
+  found=$(find "${dir%/}" -type f)
+
+  for f in $found;do
+    local_file="${f}"
+
+    remote_file=${f#"$(dirname $dir)"} # remove the directory prefix
+    remote_file=${remote_file#/} # remove a possible leading slash
+
+    echo "Uploading ${local_file} to ${BUCKET}/${ARTIFACT_FOLDER}/${remote_file} ..."
+    (
+      logfile=$(basename ${local_file}).log
+      gsutil cp -r "${local_file}" "${BUCKET}/${ARTIFACT_FOLDER}/${remote_file}" > ${logfile}
+      if [[ $? -ne 0 ]];then
+        echo "${local_file} failed." | tee -a ${failure_file}
+        cat ${logfile}
+      fi
+    ) &
+  done
+done
+
+wait
+
+# Check if there are failures
+if [[ -s ${failure_file} ]];then
+  echo
+  echo "Some files failed to upload:"
+  cat ${failure_file}
+  exit 1
+fi
+
+echo "All uploads succeeded."
