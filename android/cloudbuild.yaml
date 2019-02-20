@@ -17,8 +17,7 @@ steps:
   - 'project_id=$PROJECT_ID'
   - '--file=Dockerfile-sdk'
   - '.'
-  - '--cache-from'
-  - 'gcr.io/$PROJECT_ID/android:base'
+  - '--cache-from=gcr.io/$PROJECT_ID/android:base'
 
 images:
   - 'gcr.io/$PROJECT_ID/android:base'

@@ -10,7 +10,7 @@ steps:
     touch ${failure_file}
 
     # Loop through the cloud build files
-    for config in $(find . -name 'cloudbuild*.yaml');do
+    for config in $(find . -mindepth 2 -name 'cloudbuild*.yaml');do
       dir=$(dirname ${config})
       name=$(basename ${dir})
 
