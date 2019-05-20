@@ -2,6 +2,10 @@
 
 This includes a pair of builders, `save_cache` and `restore_cache`, that work together to cache files between builds to a GCS bucket (or local file).
 
+## Deprecated
+
+This code has been merged into Google's official [cloud-builders-community](https://github.com/GoogleCloudPlatform/cloud-builders-community/blob/master/cache/README.md) repository, so that's where active development is taking place.
+
 ## Using the `save_cache` builder
 
 All options use the form `--option=value` or `-o=value` so that they look nice in Yaml files.
