@@ -37,8 +37,9 @@ module.exports.updateBuildStatus = (event) => {
   }
 
   let i, j = 0
-  i = repoSource.repoName.indexOf('_')
-  j = repoSource.repoName.indexOf('_', i + 1)
+  const delimiter = repoSource.repoName.startsWith('github_') ? '_' : '-';
+  i = repoSource.repoName.indexOf(delimiter)
+  j = repoSource.repoName.indexOf(delimiter, i + 1)
   const repoOwner = repoSource.repoName.substring(i + 1, j)
   const repoName = repoSource.repoName.substring(j + 1)
   if (!repoOwner || !repoName) {
