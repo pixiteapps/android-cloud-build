@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-cksum $@ | cut -d' ' -f1
+dir=$@; (find "$dir" -type f -exec cksum {} +; find "$dir" -type d) | LC_ALL=C sort | cksum | cut -d' ' -f1
